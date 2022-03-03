@@ -1,14 +1,12 @@
-function MeetupDetail() {
+import classes from "./MeetupDetail.module.css";
+function MeetupDetail(props) {
   return (
-    <>
-      <img
-        src="https://www.euandopelomundo.com/wp-content/uploads/2019/04/sao_paulo.jpg"
-        alt=""
-      />
-      <h1>Meetup in São Paulo</h1>
-      <address>São paulo, 554</address>
-      <p>The meetup description</p>
-    </>
+    <section className={classes.detail}>
+      <img src={props.image} alt={props.title} />
+      <h1>{props.title} </h1>
+      <address>{props.address} </address>
+      <p>{props.description}</p>
+    </section>
   );
 }
 

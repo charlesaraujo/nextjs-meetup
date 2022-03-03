@@ -19,8 +19,17 @@ const DUMMUY_DATA = [
   },
 ];
 
-function HomePage() {
-  return <MeetupList meetups={DUMMUY_DATA} />;
+function HomePage(props) {
+  return <MeetupList meetups={props.meetups} />;
+}
+
+export function getStaticProps() {
+  //fetch data here
+  return {
+    props: {
+      meetups: DUMMUY_DATA,
+    },
+  };
 }
 
 export default HomePage;
