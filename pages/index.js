@@ -1,34 +1,41 @@
-import MeetupList from "../components/meetups/MeetupList";
+import { MongoClient } from "mongodb";
 
-const DUMMUY_DATA = [
-  {
-    id: "m1",
-    title: "Meetup in New York",
-    image:
-      "https://static5.depositphotos.com/1030296/395/i/950/depositphotos_3958211-stock-photo-new-york-cityscape-tourism-concept.jpg",
-    address: "New York, 223",
-    description: "New York is the most populous city in the United States.",
-  },
-  {
-    id: "m2",
-    title: "Meetup in São Paulo",
-    image:
-      "https://www.euandopelomundo.com/wp-content/uploads/2019/04/sao_paulo.jpg",
-    address: "São Paulo, 554",
-    description: "São Paulo is the most populous city in the Brazil.",
-  },
-];
+import MeetupList from "../components/meetups/MeetupList";
 
 function HomePage(props) {
   return <MeetupList meetups={props.meetups} />;
 }
 
-export function getStaticProps() {
-  //fetch data here
+// export async function getServerSideProps() {
+//   return {
+//     props: {
+//       meetups: DUMMUY_DATA,
+//     },
+//   };
+// }
+
+export async function getStaticProps() {
+  const client = await MongoClient.connect(
+    `mongodb+srv://${process.env.USERDB}:${process.env.PASSWORDDB}@mecndev.1rxjx.mongodb.net/meetups?retryWrites=true&w=majority`
+  );
+  const db = client.db();
+
+  const meetupCollection = db.collection("meetups");
+
+  const meetups = await meetupCollection.find().toArray();
+
+  client.close();
+
   return {
     props: {
-      meetups: DUMMUY_DATA,
+      meetups: meetups.map((meet) => ({
+        id: meet._id.toString(),
+        title: meet.title,
+        image: meet.image,
+        address: meet.address,
+      })),
     },
+    revalidate: 10,
   };
 }
 
